@@ -1,0 +1,17 @@
+squidproxy:
+  image:
+    repository: nacromancer858/squid-proxy
+  replicaCount: 1
+
+service:
+  name: squid-proxy-service
+  type: NodePort
+  port: 3128
+  targetPort: 3128
+  nodePort: 31111
+
+authorization:
+  enabled: true  
+whitelistURLs:
+  - .google.com
+  - .facebook.com

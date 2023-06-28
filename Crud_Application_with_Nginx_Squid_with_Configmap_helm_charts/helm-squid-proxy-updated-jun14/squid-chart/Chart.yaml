@@ -1,0 +1,6 @@
+apiVersion: v2
+name: squid-proxy
+description: A Helm chart for deploying Squid Proxy
+version: 0.1.0
+
+

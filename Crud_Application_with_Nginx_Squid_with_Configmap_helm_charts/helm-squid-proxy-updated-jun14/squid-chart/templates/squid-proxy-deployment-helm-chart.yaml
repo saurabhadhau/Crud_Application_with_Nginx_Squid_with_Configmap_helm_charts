@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "squid-proxy.fullname" . }}
+spec:
+  replicas: {{ .Values.squidproxy.replicaCount }}
+  selector:
+    matchLabels:
+      app: squid-proxy
+  template:
+    metadata:
+      labels:
+        app: squid-proxy
+    spec:
+      containers:
+        - name: squid-proxy
+          image: {{ .Values.squidproxy.image.repository }}
+          ports:
+            - containerPort: 3128
+          volumeMounts:
+            - name: squid-config-volume
+              mountPath: /etc/squid/squid.conf.local
+              subPath: squid.conf
+      volumes:
+        - name: squid-config-volume
+          configMap:
+            name: squid-config

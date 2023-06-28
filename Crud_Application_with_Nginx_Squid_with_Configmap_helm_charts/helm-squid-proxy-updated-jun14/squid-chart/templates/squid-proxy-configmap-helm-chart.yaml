@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-configmap
+data:
+  squid.conf.local: |
+    http_port 3128
+
+    {{- if .Values.authorization.enabled }}
+    auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwdfile
+    auth_param basic children 5
+    auth_param basic realm Squid proxy-caching web server
+    auth_param basic credentialsttl 2 hours
+    auth_param basic casesensitive off
+    acl authenticated proxy_auth REQUIRED
+    {{- end }}
+
+    # Whitelist specific domains
+{{- range $url := .Values.whitelistURLs }}
+    acl whitelist dstdomain {{$url}}
+{{- end }}
+
+    {{- if .Values.authorization.enabled }}
+    # Only allow authenticated users with correct passwords to access the whitelist
+    http_access allow authenticated whitelist
+    http_access deny authenticated
+    {{- else }}
+    # Allow access to the whitelist for all users when authorization is disabled
+    http_access allow whitelist
+    {{- end }}
+
+    # Deny access to all other domains for unauthenticated users
+    http_access deny !authenticated
+

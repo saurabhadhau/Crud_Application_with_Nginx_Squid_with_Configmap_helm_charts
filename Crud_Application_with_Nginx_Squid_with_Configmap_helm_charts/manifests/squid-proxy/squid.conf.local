@@ -1,0 +1,20 @@
+http_port 3128
+
+auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwdfile
+auth_param basic children 5
+auth_param basic realm Squid proxy-caching web server
+auth_param basic credentialsttl 2 hours
+auth_param basic casesensitive off
+acl authenticated proxy_auth REQUIRED
+
+# Whitelist specific domains
+acl whitelist dstdomain .google.com
+acl whitelist dstdomain .facebook.com
+
+# Only allow authenticated users with correct passwords to access the whitelist
+http_access allow authenticated whitelist
+http_access deny authenticated
+
+# Deny access to all other domains for unauthenticated users
+http_access deny !authenticated
+

@@ -1,0 +1,19 @@
+backend:
+  image: nacromancer858/backend-crud-v2
+  replicas: 1
+  port: 3333
+  nodePort: 32080
+  resources:
+    limits:
+      cpu: "500m"
+      memory: "256Mi"
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+  serviceType: "NodePort"
+backendPVC:
+  accessModes:
+    - ReadWriteOnce
+  storageSize: "1Gi"
+
+
